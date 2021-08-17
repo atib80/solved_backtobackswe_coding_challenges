@@ -16,10 +16,10 @@ class Solution {
     size_t msb = static_cast<size_t>(log2(input));
 
     while (lsb < msb) {
-      const int lb = (input & (1 << msb)) >> msb;
-      const int ub = (input & (1 << lsb)) >> lsb;
-      input = lb != 0 ? input | (lb << lsb) : input & ~(1 << lsb);
-      input = ub != 0 ? input | (ub << msb) : input & ~(1 << msb);
+      const int lb = (input & (1 << msb)) >> (msb - lsb);
+      const int ub = (input & (1 << lsb)) << (msb - lsb);
+      input = lb != 0 ? input | lb : input & ~(1 << lsb);
+      input = ub != 0 ? input | ub : input & ~(1 << msb);
       ++lsb;
       --msb;
     }
@@ -41,6 +41,8 @@ int main() {
             << '\n';  // expected output: 5
   std::cout << "s.reverseBits(240) -> " << s.reverseBits(240)
             << '\n';  // expected output: 15
+  std::cout << "s.reverseBits(6725) -> " << s.reverseBits(6725)
+            << '\n';  // expected output: 5195
 
   return 0;
 }
