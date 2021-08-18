@@ -1,3 +1,4 @@
+#include <array>
 #include <iostream>
 #include <limits>
 #include <string>
@@ -8,24 +9,30 @@ using namespace std;
 class Solution {
  public:
   int timeDifference(const vector<string>& times) const {
-    vector<int> time_points(1440);
-    size_t minimum_time_difference{numeric_limits<size_t>::max()};
-    for (const string& t : times) {
-      time_points[parseTimeInMinutesFromString(t)] = 1;
-    }
-
     if (times.size() < 2)
       return 0;
 
+    constexpr static size_t buffer_size{24 * 60};
+    array<bool, buffer_size> minutes{};
+
+    size_t minimum_time_difference{numeric_limits<size_t>::max()};
+
+    for (const string& t : times) {
+      const size_t index{parseTimeInMinutesFromString(t)};
+      if (minutes[index])
+        return 0;
+      minutes[index] = true;
+    }
+
     size_t first{};
 
-    while (0 == time_points[first])
+    while (!minutes[first])
       ++first;
 
     size_t last{first};
 
-    for (size_t next{first + 1}; next < time_points.size(); ++next) {
-      if (1 == time_points[next]) {
+    for (size_t next{first + 1}; next < minutes.size(); ++next) {
+      if (minutes[next]) {
         if (next - last < minimum_time_difference) {
           minimum_time_difference = next - last;
         }
@@ -40,9 +47,9 @@ class Solution {
   }
 
  private:
-  static int parseTimeInMinutesFromString(const string& time) {
-    const int hour = (time[0] - '0') * 10 + time[1] - '0';
-    const int minutes = (time[3] - '0') * 10 + time[4] - '0';
+  static size_t parseTimeInMinutesFromString(const string& time) {
+    const size_t hour = (time[0] - '0') * 10 + time[1] - '0';
+    const size_t minutes = (time[3] - '0') * 10 + time[4] - '0';
     return hour * 60 + minutes;
   }
 };
