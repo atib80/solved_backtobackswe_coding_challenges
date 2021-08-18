@@ -1,6 +1,5 @@
 #include <iostream>
 #include <limits>
-#include <set>
 #include <string>
 #include <vector>
 
@@ -9,39 +8,33 @@ using namespace std;
 class Solution {
  public:
   int timeDifference(const vector<string>& times) const {
-    set<int> time_points{};
-    int minimum_time_difference{numeric_limits<int>::max()};
+    vector<int> time_points(1440);
+    size_t minimum_time_difference{numeric_limits<size_t>::max()};
     for (const string& t : times) {
-      const int minutes = parseTimeInMinutesFromString(t);
+      time_points[parseTimeInMinutesFromString(t)] = 1;
+    }
 
-      auto p = time_points.emplace(minutes);
+    if (times.size() < 2)
+      return 0;
 
-      if (!p.second)
-        return 0;
+    size_t first{};
 
-      const auto ub_iter = time_points.upper_bound(minutes);
+    while (0 == time_points[first])
+      ++first;
 
-      if (ub_iter != end(time_points)) {
-        if (*ub_iter - minutes < minimum_time_difference) {
-          minimum_time_difference = *ub_iter - minutes;
+    size_t last{first};
+
+    for (size_t next{first + 1}; next < time_points.size(); ++next) {
+      if (1 == time_points[next]) {
+        if (next - last < minimum_time_difference) {
+          minimum_time_difference = next - last;
         }
-      }
-
-      if (p.first != begin(time_points)) {
-        --p.first;
-        if (minutes - *p.first < minimum_time_difference) {
-          minimum_time_difference = minutes - *p.first;
-        }
+        last = next;
       }
     }
 
-    const auto last = --end(time_points);
-
-    const int diff_between_first_last_time_point =
-        (1440 - *last) + *begin(time_points);
-
-    if (diff_between_first_last_time_point < minimum_time_difference)
-      return diff_between_first_last_time_point;
+    if (1440 - last + first < minimum_time_difference)
+      minimum_time_difference = 1440 - last + first;
 
     return minimum_time_difference;
   }
