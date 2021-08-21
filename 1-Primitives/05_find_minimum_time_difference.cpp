@@ -1,6 +1,5 @@
 #include <array>
 #include <iostream>
-#include <limits>
 #include <string>
 #include <vector>
 
@@ -12,10 +11,10 @@ class Solution {
     if (times.size() < 2)
       return 0;
 
-    constexpr static size_t buffer_size{24 * 60};
-    array<bool, buffer_size> minutes{};
+    constexpr size_t number_of_minutes{24 * 60};
+    array<bool, number_of_minutes> minutes{};
 
-    size_t minimum_time_difference{numeric_limits<size_t>::max()};
+    size_t minimum_time_difference{number_of_minutes};
 
     for (const string& t : times) {
       const size_t index{parseTimeInMinutesFromString(t)};
