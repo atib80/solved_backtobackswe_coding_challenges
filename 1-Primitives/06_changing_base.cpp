@@ -46,6 +46,9 @@ class Solution {
  private:
   string convert_decimal_number_to_number_base(int decimal_number,
                                                const int base) const {
+    if (base <= 2 || base > 36)
+      return "Invalid base specified!";
+
     string number_in_base;
     number_in_base.reserve(64);
 
@@ -59,7 +62,7 @@ class Solution {
     return number_in_base;
   }
 
-  int get_number_in_decimal(const string& number, const int number_base) const {
+  int get_number_in_decimal(const string& number, const int number_base) const noexcept {
     int number_in_decimal{};
     for (size_t i{}; i < number.length(); ++i) {
       number_in_decimal *= number_base;
@@ -69,7 +72,7 @@ class Solution {
     return number_in_decimal;
   }
 
-  inline int get_correct_digit_value(const char digit_char) const {
+  inline int get_correct_digit_value(const char digit_char) const noexcept {
     if (digit_char >= '0' && digit_char <= '9')
       return static_cast<int>(digit_char - '0');
 
@@ -82,7 +85,7 @@ class Solution {
     return 0;
   }
 
-  inline char get_correct_digit_char(const int digit_value) const {
+  inline char get_correct_digit_char(const int digit_value) const noexcept {
     return digit_value >= 0 && digit_value <= 9
                ? static_cast<char>('0' + digit_value)
                : (digit_value >= 10 && digit_value <= 36
