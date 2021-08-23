@@ -24,6 +24,16 @@ Constraints: Your solution should run in O(1) time.
 using std::boolalpha;
 using std::cout;
 
+constexpr std::array<int, sizeof(int) * 4>
+generate_all_powers_of_four() noexcept {
+  std::array<int, sizeof(int) * 4> powers_of_four{};
+
+  for (size_t i{}; i < sizeof(int) * 8; i += 2)
+    powers_of_four[i / 2] = 1 << i;
+
+  return powers_of_four;
+}
+
 class Solution {
  public:
   bool powerOfFour(const int input) const noexcept {
@@ -42,22 +52,10 @@ class Solution {
     return ((input & (input - 1)) == 0) && ((input & 0x55555555) != 0);
   }
 
-  static constexpr std::array<int, sizeof(int) * 4>
-  generate_all_powers_of_four() noexcept {
-    std::array<int, sizeof(int) * 4> powers_of_four{};
-
-    for (size_t i{}; i < sizeof(int) * 8; i += 2)
-      powers_of_four[i / 2] = 1 << i;
-
-    return powers_of_four;
-  }
-
   bool powerOfFour_v3(const int input) const {
-    constexpr std::array<int, sizeof(int) * 4> seq_of_powers_of_four{
-        generate_all_powers_of_four()};
-
-    const std::unordered_set<int> powers_of_four(seq_of_powers_of_four.cbegin(),
-                                                 seq_of_powers_of_four.cend());
+    const std::unordered_set<int> powers_of_four{
+        generate_all_powers_of_four().cbegin(),
+        generate_all_powers_of_four().cend()};
 
     return powers_of_four.find(input) != std::cend(powers_of_four);
   }
