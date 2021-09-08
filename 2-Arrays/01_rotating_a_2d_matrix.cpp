@@ -43,7 +43,8 @@ Can you do the rotation in-place?
 using namespace std;
 
 template <typename ContainerType>
-void print_matrix(const ContainerType& container, ostream& os) {
+void print_contents_of_2d_container(const ContainerType& container, ostream& os) {
+
   auto start_row = container.cbegin();
   auto last_row = container.cend();
 
@@ -69,7 +70,7 @@ void print_matrix(const ContainerType& container, ostream& os) {
 
 class Solution {
  public:
-  void rotate(vector<vector<int>>& matrix) noexcept {
+  void rotate(vector<vector<int>>& matrix) const noexcept {
     if (matrix.size() >= 2 && matrix.size() == matrix[0].size()) {
       for (size_t offset{}; offset < matrix.size() / 2; ++offset) {
         for (size_t x{offset}; x < matrix.size() - 1 - offset; ++x) {
@@ -97,7 +98,7 @@ int main() {
 
   s.rotate(matrix1);
 
-  print_matrix(matrix1, cout);
+  print_contents_of_2d_container(matrix1, cout);
 
   cout << "----------------------------------------\n";
 
@@ -105,7 +106,7 @@ int main() {
 
   s.rotate(matrix2);
 
-  print_matrix(matrix2, cout);
+  print_contents_of_2d_container(matrix2, cout);
 
   return 0;
 }
