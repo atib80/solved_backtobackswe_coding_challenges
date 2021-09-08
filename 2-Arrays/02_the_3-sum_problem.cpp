@@ -1,5 +1,42 @@
+/*
+Given an array of n integers, return all unique triplets [a,b,c] in the array
+such that a + b + c = 0.
+
+Example 1:
+Input:
+[-3, -1, 1, 0, 2, 10, -2, 8]
+
+Output:
+[
+ [-3, 1, 2],
+ [-2, 0, 2],
+ [-1, 0, 1]
+]
+
+Example 2:
+Input:
+[-5, 3, 2, 0, 1, -1, -5, 3, 2]
+
+Output:
+[
+ [-5, 2, 3],  # The same triplet is not duplicated.
+ [-1, 0, 1]
+]
+
+Example 3:
+Input:
+[1, 2, 3, 4]
+
+Output:
+[] # No triplets found that sum to zero.
+
+Note
+Duplicate triplets are not allowed in the output.
+*/
+
 #include <algorithm>
 #include <iostream>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -29,31 +66,33 @@ class Solution {
     if (arr_size < 3U)
       return {};
 
-    vector<vector<int>> correct_three_sum_sequences{};
-
+    vector<vector<int>> all_three_sum_sequences{};
+    unordered_set<int> visited_numbers{};
     sort(begin(array), end(array));
 
-    for (size_t i{}; i < arr_size - 2;
-         i = static_cast<size_t>(
-             upper_bound(cbegin(array) + i + 1, cend(array) - 2, array[i]) -
-             cbegin(array))) {
-      for (size_t j{i + 1}; j < arr_size - 1;
-           j = static_cast<size_t>(
-               upper_bound(cbegin(array) + j + 1, cend(array) - 1, array[j]) -
-               cbegin(array))) {
-        const int two_sum{array[i] + array[j]};
+    for (size_t i{}; i < arr_size - 2; ++i) {
+      if (1U == visited_numbers.count(array[i]))
+        continue;
 
-        if (two_sum > 0)
+      visited_numbers.emplace(array[i]);
+
+      size_t left{i + 1}, right{arr_size - 1};
+
+      while (left < right) {
+        const int two_sum{array[left] + array[right]};
+
+        if (two_sum == -array[i]) {
+          all_three_sum_sequences.push_back(
+              {array[i], array[left], array[right]});
           break;
-
-        if (binary_search(cbegin(array) + j + 1, cend(array), 0 - two_sum)) {
-          correct_three_sum_sequences.push_back(
-              {array[i], array[j], 0 - two_sum});
+        } else if (two_sum > -array[i]) {
+          --right;
+        } else {
+          ++left;
         }
       }
     }
-
-    return correct_three_sum_sequences;
+    return all_three_sum_sequences;
   }
 };
 
