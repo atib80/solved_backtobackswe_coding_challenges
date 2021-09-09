@@ -17,6 +17,8 @@ Example 2:
 Input:
 [-5, 3, 2, 0, 1, -1, -5, 3, 2]
 
+[-5,-5,-1,0,1,2,2,3,3]
+
 Output:
 [
  [-5, 2, 3],  # The same triplet is not duplicated.
@@ -35,6 +37,7 @@ Duplicate triplets are not allowed in the output.
 */
 
 #include <algorithm>
+#include <cstdint>
 #include <iostream>
 #include <unordered_set>
 #include <utility>
@@ -68,6 +71,7 @@ class Solution {
 
     vector<vector<int>> all_three_sum_sequences{};
     unordered_set<int> visited_numbers{};
+    unordered_set<int64_t> visited_two_sum_numbers{};
     sort(begin(array), end(array));
 
     for (size_t i{}; i < arr_size - 2; ++i) {
@@ -82,9 +86,16 @@ class Solution {
         const int two_sum{array[left] + array[right]};
 
         if (two_sum == -array[i]) {
-          all_three_sum_sequences.push_back(
-              {array[i], array[left], array[right]});
-          break;
+          const int64_t hash_index{
+              (static_cast<int64_t>(array[left]) << 32) |
+              (static_cast<int64_t>(array[right]) & 0x00000000FFFFFFFFLL)};
+          if (0 == visited_two_sum_numbers.count(hash_index)) {
+            visited_two_sum_numbers.emplace(hash_index);
+            all_three_sum_sequences.push_back(
+                {array[i], array[left], array[right]});
+          }
+          ++left;
+          --right;
         } else if (two_sum > -array[i]) {
           --right;
         } else {
@@ -126,6 +137,19 @@ int main() {
   const vector<vector<int>> all_sequences3{s.threeSum(seq3)};
 
   for (const vector<int>& sequence : all_sequences3) {
+    print_sequence(cbegin(sequence), cend(sequence), cout);
+    cout << '\n';
+  }
+
+  cout << "*******************************************************\n";
+
+  vector<int> seq4{0,  2,  0, 2,  0,  0, 3,  1,  -3, 3,  0,  -3, 2, 2,
+                   -1, 4,  2, -4, 3,  0, -4, 2,  2,  -3, 1,  4,  0, 3,
+                   1,  -2, 1, 3,  -4, 4, 2,  -4, 4,  0,  -3, 2};
+
+  const vector<vector<int>> all_sequences4{s.threeSum(seq4)};
+
+  for (const vector<int>& sequence : all_sequences4) {
     print_sequence(cbegin(sequence), cend(sequence), cout);
     cout << '\n';
   }
