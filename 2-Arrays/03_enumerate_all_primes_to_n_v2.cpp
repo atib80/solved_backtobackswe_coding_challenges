@@ -53,15 +53,11 @@ class Solution {
 
     for (size_t i{2}; i < n; ++i) {
       if (is_prime[i]) {
+        prime_numbers.emplace_back(i);
         for (size_t j{i + i}; j < n; j += i) {
           is_prime[j] = false;
         }
       }
-    }
-
-    for (size_t i{2}; i < n; ++i) {
-      if (is_prime[i])
-        prime_numbers.emplace_back(i);
     }
 
     return prime_numbers;
