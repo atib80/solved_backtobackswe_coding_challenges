@@ -15,11 +15,10 @@ Output: [2, 3, 5, 7, 11, 13, 17, 19]
 Constraints:
 n >= 1
 
-asymptotic time complexity: O(n * √n) <=> O(n^1.5)
+asymptotic time complexity: O(n * lglgn)
 asymptotic space complexity: O(n)
 */
 
-#include <cmath>
 #include <iostream>
 #include <vector>
 
@@ -44,28 +43,24 @@ void print_sequence(ForwardIteratorType first,
 
 class Solution {
  public:
-  vector<int> enumeratePrimes(int n) const {
-    n = abs(n);
-
-    if (n < 2)
+  vector<size_t> enumeratePrimes(size_t n) const {
+    if (n < 2U)
       return {};
 
-    vector<int> prime_numbers{2};
+    vector<bool> is_prime(n, true);
+    is_prime[0] = is_prime[1] = false;
+    vector<size_t> prime_numbers;
 
-    for (int i{3}; i < n; i += 2) {
-      if (i % 2 == 0)
-        continue;
-
-      const int highest_factor{static_cast<int>(sqrt(i)) + 1};
-      bool is_prime{true};
-      for (int64_t j{3}; j < highest_factor; j += 2) {
-        if (i % j == 0) {
-          is_prime = false;
-          break;
+    for (size_t i{2}; i < n; ++i) {
+      if (is_prime[i]) {
+        for (size_t j{i + i}; j < n; j += i) {
+          is_prime[j] = false;
         }
       }
+    }
 
-      if (is_prime)
+    for (size_t i{2}; i < n; ++i) {
+      if (is_prime[i])
         prime_numbers.emplace_back(i);
     }
 
@@ -76,13 +71,13 @@ class Solution {
 int main() {
   Solution s;
 
-  const vector<int> sequence1{s.enumeratePrimes(1)};
+  const vector<size_t> sequence1{s.enumeratePrimes(1)};
   print_sequence(cbegin(sequence1), cend(sequence1),
                  cout);  // expected output: []
   cout << '\n';
   cout << "*******************************************************\n";
 
-  const vector<int> sequence2{s.enumeratePrimes(23)};
+  const vector<size_t> sequence2{s.enumeratePrimes(23)};
   print_sequence(cbegin(sequence2), cend(sequence2),
                  cout);  // expected output: [2, 3, 5, 7, 11, 13, 17, 19]
   cout << '\n';
