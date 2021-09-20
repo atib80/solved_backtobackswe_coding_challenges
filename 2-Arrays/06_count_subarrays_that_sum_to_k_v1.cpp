@@ -37,6 +37,9 @@ Constraints:
 #include <iostream>
 #include <vector>
 
+// asymptotic time complexity:  O(n^2)
+// asymptotic space complexity: O(n)
+
 using namespace std;
 
 class Solution {
@@ -58,11 +61,9 @@ class Solution {
 
     for (size_t i{}; i < arr.size(); ++i) {
       for (size_t j{i}; j < arr.size(); ++j) {
-
-            const int sum =
-                0 != i ? sum_of_consecutive_array_elements[j] -
-                             sum_of_consecutive_array_elements[i - 1]
-                       : sum_of_consecutive_array_elements[j];
+        const int sum = 0 != i ? sum_of_consecutive_array_elements[j] -
+                                     sum_of_consecutive_array_elements[i - 1]
+                               : sum_of_consecutive_array_elements[j];
 
         count += (sum == k);
       }
