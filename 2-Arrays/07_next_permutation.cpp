@@ -55,6 +55,7 @@ unplaced item for that slot when it comes time to choose a placement 0 <= n <=
 
 #include <algorithm>
 #include <iostream>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -79,10 +80,17 @@ void print_sequence(ForwardIteratorType first,
 
 class Solution {
  public:
-  vector<int> nextPermutation(vector<int>& nums) const {
+  // asymptotic time complexity: O(n)
+  // asymptotic space complexity: O(1)
+  vector<int> nextPermutation(vector<int>& nums) const
+      noexcept(is_nothrow_move_constructible<vector<int>>::value&&
+                   is_nothrow_move_assignable<vector<int>>::value&& noexcept(
+                       std::reverse<std::vector<int>::iterator>(
+                           std::declval<std::vector<int>::iterator>(),
+                           std::declval<std::vector<int>::iterator>()))) {
     // 1. If nums is empty or only has 1 element, return nums.
     if (nums.size() <= 1)
-      return nums;
+      return move(nums);
 
     // 2. Find the last increasing element's position while traversing nums
     // starting from the last element.
@@ -97,7 +105,7 @@ class Solution {
     // whole array [4, 3, 2, 1] -> [1, 2, 3, 4].
     if (0 == i) {
       reverse(begin(nums), end(nums));
-      return nums;
+      return move(nums);
     }
 
     --i;
@@ -116,7 +124,7 @@ class Solution {
     // 6. Reverse the order of elements in the increasing sequence.
     reverse(begin(nums) + i + 1, end(nums));
 
-    return nums;
+    return move(nums);
   }
 };
 
@@ -139,7 +147,8 @@ int main() {
 
   vector<int> sequence3{3, 2, 1};
   const vector<int> next_perm_seq3{s.nextPermutation(sequence3)};
-  print_sequence(cbegin(next_perm_seq3), cend(next_perm_seq3), cout);
+  print_sequence(cbegin(next_perm_seq3), cend(next_perm_seq3),
+                 cout);  // expected output: [1, 2, 3]
 
   cout << "\n*******************************************************\n";
 
