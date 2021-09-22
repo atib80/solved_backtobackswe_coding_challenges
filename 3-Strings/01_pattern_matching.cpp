@@ -50,7 +50,7 @@ void print_sequence(ForwardIteratorType first,
 
 class Solution {
  public:
-  // asymptotic time complexity: O(N * M), where N = number of words, M = longest word's length
+  // asymptotic time complexity: O(N * M), where N = number of words, M = max(1, pattern's length)
   // asymptotic space complexity: O(1)
   vector<string> findAndReplacePattern(const vector<string>& words,
                                        const string& pattern) const {
@@ -66,7 +66,7 @@ class Solution {
         char word_to_pattern[128]{};
         char pattern_to_word[128]{};
         bool is_match{true};
-        for (size_t i{}; i < word.length(); ++i) {
+        for (size_t i{}; i < pattern.length(); ++i) {
           const size_t pi{static_cast<size_t>(pattern[i])};
           const size_t wi{static_cast<size_t>(word[i])};
           if ((pattern_to_word[pi] != 0 &&
