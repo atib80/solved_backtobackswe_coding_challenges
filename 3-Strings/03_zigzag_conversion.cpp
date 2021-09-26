@@ -49,7 +49,7 @@ using std::string;
 class Solution {
  public:
   /*
-  asymptotic time complexity:  O(n), where 'n' is the length of string 's'
+  asymptotic time complexity:  O(n), where 'n' is the length of input string 's'
   asymptotic space complexity: O(1)
   */
   string zigzag(const string& s, const size_t rows) const {
@@ -59,19 +59,16 @@ class Solution {
     string result;
     result.reserve(s.length());
 
-    const size_t major_offset{2 * (rows - 1)};
+    const size_t longest_offset{2 * (rows - 1)};
 
-    for (size_t i{}, offset{major_offset}; i < rows; ++i, offset -= 2) {
-      bool is_bigger_step{};
+    for (size_t i{}, offset{longest_offset}; i < rows; ++i, offset -= 2) {
+      bool is_bigger_step = false;
       if (0 == offset)
-        offset = major_offset;
+        offset = longest_offset;
       for (size_t j{i}; j < s.length();
-           j += is_bigger_step ? offset : major_offset - offset) {
+           j += is_bigger_step ? offset : longest_offset - offset) {
         result.push_back(s[j]);
-        if (major_offset == offset)
-          is_bigger_step = true;
-        else
-          is_bigger_step = !is_bigger_step;
+        is_bigger_step = longest_offset == offset ? true : !is_bigger_step;
       }
     }
 
